@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,12 +12,12 @@
             font-family: "Microsoft YaHei", sans-serif;
             background: linear-gradient(135deg, #FFB6C1, #FFD1DC);
             color: #fff;
-            文本对齐: 居中;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            最小高度: 100视口高度;
+            min-height: 100vh;
             overflow: hidden;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -26,9 +27,9 @@
         }
         #introScreen {
             position: fixed;
-            顶部: 0;
-            左侧: 0;
-            宽度: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -185,7 +186,7 @@
             font-size: 18px;
             opacity: 0.8;
             text-align: center;
-            宽度: 80%;
+            width: 80%;
             max-width: 700px;
         }
     </style>
@@ -243,33 +244,33 @@
             document.body.appendChild(blossom);
 
             let posX = x;
-            让 posY = y;
+            let posY = y;
             let speedX = Math.random() * 6 - 3;
             let speedY = Math.random() * 2 - 5;
-            让 旋转 = 0;
+            let rotation = 0;
             let rotationSpeed = Math.random() * 10 - 5;
 
             const gravity = 0.1;
             const friction = 0.95;
 
             function animate() {
-                速度Y += 重力;
-                速度X *= 摩擦;
-                位置X += 速度X;
-                位置Y += 速度Y;
+                speedY += gravity;
+                speedX *= friction;
+                posX += speedX;
+                posY += speedY;
                 rotation += rotationSpeed;
 
-                绽放.样式.变换 = `translate(-50%, -50%) rotate(${rotation}deg)`;
-                花朵.样式.左 = `${posX}像素`;
-                花朵.样式.顶部 = `${posY}像素`;
+                blossom.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+                blossom.style.left = `${posX}px`;
+                blossom.style.top = `${posY}px`;
 
                 const opacity = 1 - (posY - y) / 300;
                 blossom.style.opacity = opacity;
 
-                如果 (透明度 > 0) {
+                if (opacity > 0) {
                     requestAnimationFrame(animate);
                 } else {
-                    绽放.移除();
+                    blossom.remove();
                 }
             }
             requestAnimationFrame(animate);
@@ -294,16 +295,16 @@
             "管理员也是小可爱",
             "今天也是元气满满的一天！",
             "嘿嘿，被你发现啦~",
-            “要乖乖的哦 (ฅ•.•ฅ)”
+            "要乖乖的哦 (ฅ•.•ฅ)"
         ];
-        常量 表情符号 = [
-            “(。・ω・。)zZ”,
-            “(๑•̀ㅂ•́)和✧”,
+        const emojis = [
+            "(。・ω・。)zZ",
+            "(๑•̀ㅂ•́)و✧",
             "(*≧ｍ≦*)",
             "٩(ˊᗜˋ*)و",
             "=w=",
             "☜(ˆ▽ˆ)ﾉ",
-            “(。-`ω´-)”,
+            "(。-`ω´-)",
             "◕‿◕✿"
         ];
 
@@ -320,5 +321,5 @@
         }
         setInterval(setRandomContent, 3000);
     </script>
-</正文>
+</body>
 </html>
