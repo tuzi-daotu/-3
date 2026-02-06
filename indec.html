@@ -1,325 +1,215 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 移动端适配：禁止缩放，宽度自适应设备 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>小三月服务器规则</title>
     <style>
+        /* ===================== 全局基础样式 ===================== */
+        * {
+            /* 重置默认内外边距，统一盒模型 */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 50px 20px;
-            font-family: "Microsoft YaHei", sans-serif;
+            /* 字体：优先微软雅黑，兼容无衬线字体 */
+            font-family: "Microsoft YaHei", "Heiti SC", sans-serif;
+            /* 粉色渐变背景 */
             background: linear-gradient(135deg, #FFB6C1, #FFD1DC);
-            color: #fff;
-            text-align: center;
+            color: #ffffff; /* 文字白色 */
+            text-align: center; /* 文字居中 */
+            /* 弹性布局：垂直+水平居中 */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            /* 占满屏幕高度 */
             min-height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* 隐藏滚动条 */
+            /* 禁止文字选中（防止误操作） */
             -webkit-user-select: none;
-            -moz-user-select: none;
             -ms-user-select: none;
+            -moz-user-select: none;
             user-select: none;
+            /* 背景过渡动画（hover时渐变） */
             transition: background 2s ease;
         }
+
+        /* ===================== 初始点击屏幕样式 ===================== */
         #introScreen {
-            position: fixed;
+            position: fixed; /* 固定全屏 */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            /* 内容居中 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-            transition: opacity 0.5s ease;
+            z-index: 1000; /* 层级最高，覆盖其他内容 */
+            cursor: pointer; /* 鼠标悬浮显示手型 */
+            transition: opacity 0.5s ease; /* 淡出动画 */
         }
+
+        /* ===================== 点击区域样式 ===================== */
         #clickArea {
-            position: relative;
+            position: relative; /* 作为伪元素的父容器 */
             padding: 20px 40px;
             border-radius: 15px;
+            margin-top: 30px;
         }
+
+        /* 点击区域发光边框（伪元素实现） */
         #clickArea::before {
-            content: '';
+            content: ""; /* 伪元素必须有content */
             position: absolute;
-            inset: -15px;
+            inset: -2px; /* 上下左右向外扩展2px */
             border: 2px solid;
+            /* 粉色渐变边框 */
             border-image: linear-gradient(45deg, #FF69B4, #FF1493, #FF69B4) 1;
             border-radius: 20px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            filter: blur(4px);
+            opacity: 0; /* 默认隐藏 */
+            transition: opacity 0.4s ease; /* 淡入动画 */
+            pointer-events: none; /* 不遮挡点击 */
+            filter: blur(4px); /* 模糊发光效果 */
         }
-        #introScreen:hover #clickArea::before {
+
+        /* 鼠标悬浮时显示发光边框 */
+        #clickArea:hover::before {
             opacity: 1;
         }
+
+        /* ===================== 标题样式 ===================== */
         #introScreen h1 {
             font-size: 48px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            background: linear-gradient(90deg, #FF6B9D, #FF8BA7, #FFB6C1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
+            font-weight: 900; /* 粗体 */
+            letter-spacing: 5px; /* 字间距 */
+            /* 文字渐变效果 */
+            background: linear-gradient(90deg, #FF69B4, #FFB6C1, #FF69B4);
+            -webkit-background-clip: text; /* 裁剪背景到文字 */
+            -webkit-text-fill-color: transparent; /* 文字透明显示背景 */
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.5); /* 文字发光 */
             margin-bottom: 20px;
             position: relative;
             z-index: 1;
         }
+
+        /* ===================== 正文提示文字 ===================== */
         #introScreen p {
             font-size: 20px;
-            color: #FF9AA2;
-            font-style: italic;
-            text-shadow: 0 0 10px #FFB7C5;
+            color: #FF9AA2; /* 浅粉色 */
+            font-style: italic; /* 斜体 */
+            text-shadow: 0 0 10px #FFB7C5; /* 文字阴影 */
             position: relative;
             z-index: 1;
+            margin: 10px 0;
         }
+
+        /* ===================== 主内容区域（默认隐藏） ===================== */
         #mainContent {
-            opacity: 0;
-            transform: translateY(50px);
+            opacity: 0; /* 默认透明 */
+            transform: translateY(50px); /* 默认向下偏移50px */
+            /* 淡入+上移动画 */
             transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             width: 100%;
-            padding-top: 50px;
+            padding: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        #mainContent.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .plum-blossom {
-            position: absolute;
-            font-size: 20px;
-            color: #FFB6C1;
-            user-select: none;
-            pointer-events: none;
-            z-index: 1001;
-            text-shadow: 0 0 5px rgba(255, 192, 203, 0.7);
-            top: 50%;
-            left: 50%;
-        }
-        .b-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .b-container:hover {
-            transform: scale(1.02);
-        }
-        .b {
-            font-size: 48px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            background: linear-gradient(90deg, #FF99CC, #66CCFF, #FFCC99);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 153, 204, 0.7);
-            transition: all 0.3s ease;
-        }
-        .tagline {
-            font-size: 20px;
-            color: #FF99CC;
-            font-style: italic;
-            text-shadow: 0 0 5px #66CCFF;
-            min-width: 120px;
-            transition: all 0.3s ease;
-        }
-        .q {
-            font-size: 24px;
-            font-weight: bold;
-            color: #FF99CC;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #66CCFF;
-        }
-        .rules-container {
-            width: 80%;
-            max-width: 700px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .rule-card {
-            background: #e0e0e0;
-            background-image: linear-gradient(90deg, #00FFFF, #FF69B4, #00FFFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-            border: 2px solid #999999;
-            border-radius: 15px;
-            padding: 20px 30px;
-            font-size: 22px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+
+        /* ===================== 规则列表样式 ===================== */
+        .rule-list {
+            max-width: 800px; /* 最大宽度，防止PC端过宽 */
             width: 100%;
-            margin-bottom: 20px;
+            text-align: left; /* 列表左对齐 */
+            margin-top: 20px;
+            /* 半透明背景+毛玻璃效果 */
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px); /* 毛玻璃 */
         }
-        .rule-card:hover {
-            border-color: #666666;
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            z-index: 1;
+
+        /* 列表项间距 */
+        .rule-list li {
+            margin: 10px 0;
+            line-height: 1.6; /* 行高，提升可读性 */
+            list-style: none; /* 隐藏默认列表符号 */
+            position: relative;
+            padding-left: 20px;
         }
-        .rule-number {
-            font-weight: bold;
-            margin-right: 8px;
+
+        /* 自定义列表符号（粉色小圆点） */
+        .rule-list li::before {
+            content: "●";
+            color: #FF69B4;
+            position: absolute;
+            left: 0;
         }
-        .f {
-            color: #66CCFF;
-            font-style: italic;
+
+        /* ===================== 联系方式样式 ===================== */
+        .contact {
             margin-top: 30px;
             font-size: 18px;
-            opacity: 0.8;
-            text-align: center;
-            width: 80%;
-            max-width: 700px;
+            color: #FFC0CB;
         }
     </style>
 </head>
 <body>
-    <div id="introScreen">
+    <!-- 初始点击封面 -->
+    <div id="introScreen" onclick="showContent()">
+        <h1>小三月服务器规则</h1>
         <div id="clickArea">
-            <h1>小三月服务器规则</h1>
-            <p>点这里开启~ ✧⁺⸜(●˙▾˙●)⸝⁺✧</p>
+            <p>点击此处查看详细规则</p>
         </div>
     </div>
+
+    <!-- 详细规则内容（默认隐藏） -->
     <div id="mainContent">
-        <div class="b-container" id="titleContainer">
-            <div class="tagline" id="dynamicTagline">今日也要开心哦~</div>
-            <div class="b">小三月服务器规则</div>
-            <div class="emoji" id="dynamicEmoji">◕‿◕✿</div>
+        <h2>服务器核心规则</h2>
+        <ul class="rule-list">
+            <li>禁止使用作弊、外挂等违规程序，一经发现永久封禁</li>
+            <li>禁止恶意破坏他人建筑、盗取资源，需文明互动</li>
+            <li>禁止辱骂、攻击、歧视其他玩家，保持友好交流</li>
+            <li>禁止利用游戏漏洞牟利或扰乱服务器秩序</li>
+            <li>禁止发布广告、涉政、色情等违规信息</li>
+            <li>请自觉遵守服务器管理规定，共同维护良好环境</li>
+        </ul>
+        <div class="contact">
+            <p>交流群：1078675658</p>
+            <p>服务器IP：可替换为实际服务器IP</p>
         </div>
-        <div class="q">QQ群号：1078675658</div>
-        <div class="rules-container" id="rulesContainer">
-            <div class="rule-card"><span class="rule-number">1.</span> 禁止侮辱歧视等行为。</div>
-            <div class="rule-card"><span class="rule-number">2.</span> 禁止阴间播放让人反感的音频，如果被制止请立刻停止播放!</div>
-            <div class="rule-card"><span class="rule-number">3.</span> 禁止开外挂，如果被抓封禁11454年。</div>
-            <div class="rule-card"><span class="rule-number">4.</span> 禁止914 抢东西。</div>
-            <div class="rule-card"><span class="rule-number">5.</span> 九尾/保安/混沌禁止乱杀无枪械的DD/博士，判断标准拿起武器就可以击杀包括914（不包括电炮），可以杀不听指挥的人但不可以命令自杀.探路.要东西等，不可以在危险情况绑人，绑人后不可以抢东西。</div>
-            <div class="rule-card"><span class="rule-number">6.</span> DD/博士不能在清收互相攻击，规定范围清收电梯门。</div>
-            <div class="rule-card"><span class="rule-number">7.</span> 禁止退服雷!!!</div>
-            <div class="rule-card"><span class="rule-number">8.</span> 禁止079内鬼行为，如不配和锁队友门。</div>
-            <div class="rule-card"><span class="rule-number">9.</span> 禁止小僵尸的内鬼行为，如玩核弹。</div>
-        </div>
-        <p class="f">此规则最终解释权归群主和最高管理员所有。</p>
     </div>
 
     <script>
-        const sakuraGradients = [
-            'linear-gradient(135deg, #FFB6C1, #FFD1DC, #FFF0F5)',
-            'linear-gradient(135deg, #FFE4E1, #FCC4D4, #F8BBD0)',
-            'linear-gradient(135deg, #F8BBD0, #E1BEE7, #F3E5F5)',
-            'linear-gradient(135deg, #FADADD, #FFD8D8, #FFF5F5)',
-            'linear-gradient(135deg, #FFCDD2, #E8BBDD, #F48FB1)'
-        ];
-        let currentColorIndex = 0;
-
-        function changeBackground() {
-            document.body.style.background = sakuraGradients[currentColorIndex];
-            currentColorIndex = (currentColorIndex + 1) % sakuraGradients.length;
-        }
-        setInterval(changeBackground, 5000);
-
-        function createPlumBlossom(x, y) {
-            const blossom = document.createElement('div');
-            blossom.classList.add('plum-blossom');
-            blossom.textContent = '❀';
-            const size = Math.random() * 15 + 15;
-            blossom.style.fontSize = `${size}px`;
-            document.body.appendChild(blossom);
-
-            let posX = x;
-            let posY = y;
-            let speedX = Math.random() * 6 - 3;
-            let speedY = Math.random() * 2 - 5;
-            let rotation = 0;
-            let rotationSpeed = Math.random() * 10 - 5;
-
-            const gravity = 0.1;
-            const friction = 0.95;
-
-            function animate() {
-                speedY += gravity;
-                speedX *= friction;
-                posX += speedX;
-                posY += speedY;
-                rotation += rotationSpeed;
-
-                blossom.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-                blossom.style.left = `${posX}px`;
-                blossom.style.top = `${posY}px`;
-
-                const opacity = 1 - (posY - y) / 300;
-                blossom.style.opacity = opacity;
-
-                if (opacity > 0) {
-                    requestAnimationFrame(animate);
-                } else {
-                    blossom.remove();
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        const introScreen = document.getElementById('introScreen');
-        introScreen.addEventListener('click', function(e) {
-            for(let i = 0; i < 20; i++) {
-                createPlumBlossom(e.clientX, e.clientY);
-            }
-            introScreen.style.opacity = '0';
+        // 点击封面显示详细内容的函数
+        function showContent() {
+            // 获取DOM元素
+            const introScreen = document.getElementById('introScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            // 1. 淡出封面（0.5秒后隐藏）
+            introScreen.style.opacity = 0;
             setTimeout(() => {
                 introScreen.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                mainContent.classList.add('active');
             }, 500);
-        });
-
-        const taglines = [
-            "摸摸头，别紧张啦~",
-            "开心每一天我只希望看到你的笑容！",
-            "管理员也是小可爱",
-            "今天也是元气满满的一天！",
-            "嘿嘿，被你发现啦~",
-            "要乖乖的哦 (ฅ•.•ฅ)"
-        ];
-        const emojis = [
-            "(。・ω・。)zZ",
-            "(๑•̀ㅂ•́)و✧",
-            "(*≧ｍ≦*)",
-            "٩(ˊᗜˋ*)و",
-            "=w=",
-            "☜(ˆ▽ˆ)ﾉ",
-            "(。-`ω´-)",
-            "◕‿◕✿"
-        ];
-
-        const mainContent = document.getElementById('mainContent');
-        const titleContainer = document.getElementById('titleContainer');
-        const emojiElement = document.getElementById('dynamicEmoji');
-        const taglineElement = document.getElementById('dynamicTagline');
-
-        function setRandomContent() {
-            const randomTag = taglines[Math.floor(Math.random() * taglines.length)];
-            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-            taglineElement.textContent = randomTag;
-            emojiElement.textContent = randomEmoji;
+            
+            // 2. 淡入并上移显示主内容
+            mainContent.style.opacity = 1;
+            mainContent.style.transform = 'translateY(0)';
         }
-        setInterval(setRandomContent, 3000);
+
+        // 可选：页面加载完成后，给body添加加载完成的样式（防止闪烁）
+        window.onload = function() {
+            document.body.style.opacity = 1;
+        };
     </script>
 </body>
 </html>
